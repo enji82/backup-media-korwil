@@ -1,0 +1,37 @@
+<header>
+  <h2>DAFTAR PENDIDIK DAN TENAGA KEPENDIDIKAN (PTK) SD SWASTA</h2>
+</header>
+
+<div class="filter-container">
+    <div class="filter-group">
+      <label for="filterUnitKerja">Unit Kerja:</label>
+      <select id="filterUnitKerja"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterStatus">Status:</label>
+      <select id="filterStatus"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterJabatan">Jabatan:</label>
+      <select id="filterJabatan"></select>
+    </div>
+</div>
+
+<main class="table-view-container">
+  <div id="loadingStatus" class="loading-container">
+    <div class="spinner-container">
+      <div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div>
+    </div>
+    <p>Memuat data PTK, mohon tunggu...</p>
+  </div>
+
+  <div id="tableWrapper" style="display:none;">
+    <div class="table-container">
+      <table id="daftarPtkSdsTable" class="data-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="pagination-container" class="pagination-container"></div>
+  </div>
+</main>

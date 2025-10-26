@@ -1,0 +1,33 @@
+<header>
+  <h2>DAFTAR PENGIRIMAN SK PEMBAGIAN TUGAS</h2>
+</header>
+
+<main class="table-view-container">
+  <div id="loadingStatus" class="loading-container">
+      <div class="spinner-container">
+        <div class="spinner-bar"></div>
+        <div class="spinner-bar"></div>
+        <div class="spinner-bar"></div>
+        <div class="spinner-bar"></div>
+    </div>
+    <p>Memuat data, mohon tunggu...</p>
+</div>
+  
+  <div id="tableWrapper" class="table-container" style="display:none;">
+    <table id="statusTable" class="data-table">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  
+  <div id="pagination-container" class="pagination-container" style="display:none;"></div>
+</main>
+
+<style>
+  main.table-view-container {
+    display: block; /* Mengembalikan ke layout normal, bukan flexbox */
+  }
+  #tableWrapper.table-container {
+    overflow-y: initial; /* Menghilangkan scrollbar internal dari pembungkus tabel */
+  }
+</style>

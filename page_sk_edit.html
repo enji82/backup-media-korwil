@@ -1,0 +1,63 @@
+<header>
+  <h2>EDIT DATA SK PEMBAGIAN TUGAS</h2>
+</header>
+
+<div class="form-container">
+    <!-- Tampilan pemuatan awal -->
+    <div id="loading-data" class="loading-container">
+        <div class="spinner-container">
+            <div class="spinner-bar"></div>
+            <div class="spinner-bar"></div>
+            <div class="spinner-bar"></div>
+            <div class="spinner-bar"></div>
+        </div>
+        <p>Memuat data untuk diedit...</p>
+    </div>
+
+    <!-- Formulir Edit, awalnya tersembunyi -->
+    <form id="skEditForm" class="edit-form" style="display: none;">
+        <input type="hidden" id="rowIndex" name="rowIndex">
+        
+        <!-- PERUBAHAN: Dibungkus dalam form-grid -->
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nama Sekolah (Tidak dapat diubah)</label>
+                <input type="text" id="namaSD" name="namaSD" readonly style="background-color: rgba(0,0,0,0.3); cursor: not-allowed;">
+            </div>
+            <div class="form-group">
+                <label>Tahun Ajaran (Tidak dapat diubah)</label>
+                <input type="text" id="tahunAjaran" name="tahunAjaran" readonly style="background-color: rgba(0,0,0,0.3); cursor: not-allowed;">
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="semester">Semester</label>
+                <select id="semester" name="semester" required></select>
+            </div>
+            <div class="form-group">
+                <label for="kriteriaSK">Kriteria SK</label>
+                <select id="kriteriaSK" name="kriteriaSK" required></select>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="nomorSK">Nomor SK</label>
+                <input type="text" id="nomorSK" name="nomorSK" required>
+            </div>
+            <div class="form-group">
+                <label for="tanggalSK">Tanggal SK</label>
+                <input type="date" id="tanggalSK" name="tanggalSK" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="fileSK">Ganti File SK (Opsional, PDF, Maks. 1MB)</label>
+            <input type="file" id="fileSK" name="fileSK" accept="application/pdf">
+            <div id="existingFileLink" class="input-hint" style="margin-top: 10px;"></div>
+        </div>
+        <div class="form-footer">
+            <button type="submit" id="submitButton" class="submit-btn">Simpan Perubahan</button>
+        </div>
+    </form>
+</div>
+

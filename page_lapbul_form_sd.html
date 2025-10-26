@@ -1,0 +1,57 @@
+<header>
+  <h2 id="main-form-title">FORMULIR UNGGAH LAPORAN BULAN SD</h2>
+</header>
+
+<main class="manual-form">
+  <form id="lapbulFormSd">
+    
+    <!-- Wadah Utama untuk 3 Kolom -->
+    <div class="form-layout-grid">
+      
+      <!-- ======================= KOLOM 1: DATA SEKOLAH ======================= -->
+      <div class="form-column" id="form-col-1">
+        <fieldset class="ptk-fieldset">
+          <legend>Data Sekolah</legend>
+          <div class="form-grid-1">
+            <div class="form-group"><label>Laporan Bulan</label><select name="laporanBulan" required></select></div>
+            <div class="form-group"><label>Tahun</label><select name="tahun" required></select></div>
+            <div class="form-group"><label>Status Sekolah</label><select id="statusSekolah" name="statusSekolah" required><option value="" disabled selected>-- Pilih Status --</option><option value="Negeri">Negeri</option><option value="Swasta">Swasta</option></select></div>
+            <div class="form-group"><label>Nama SD</label><select id="namaSekolah" name="namaSekolah" required disabled><option>Pilih Status Dahulu</option></select></div>
+            <div class="form-group"><label>NPSN</label><input type="text" name="npsn" pattern="[0-9]{8}" title="NPSN harus 8 digit angka" required></div>
+            <div class="form-group"><label>Jumlah Rombel (Total)</label><input type="number" name="jumlahRombel" value="0" min="3" max="24" required></div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- ======================= KOLOM 2: DATA JUMLAH MURID ======================= -->
+      <div class="form-column" id="form-col-2">
+        <fieldset class="ptk-fieldset">
+          <legend>Data Jumlah Murid</legend>
+          <div id="kelas-tabs" class="tabs-container">
+            <!-- Tombol tab (Kelas 1-6) akan dibuat oleh JavaScript -->
+          </div>
+          <div id="kelas-content-container">
+            <!-- Konten detail setiap kelas akan dibuat oleh JavaScript -->
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- ======================= KOLOM 3: DATA PTK & UNGGAH ======================= -->
+      <div class="form-column" id="form-col-3">
+        <div id="ptk-section-container">
+          <!-- Konten PTK (Negeri atau Swasta) akan ditampilkan di sini -->
+        </div>
+        <fieldset class="ptk-fieldset">
+            <legend>Unggah Berkas</legend>
+            <div class="form-group">
+                <label for="fileLapbul">Scan PDF Laporan Bulan</label>
+                <input type="file" id="fileLapbul" name="fileData" accept=".pdf" required>
+                <p class="input-hint">Format PDF, ukuran maksimal 300 KB.</p>
+            </div>
+            <button type="submit" class="submit-btn" style="margin-top: 10px;">Kirim Laporan</button>
+        </fieldset>
+      </div>
+    </div>
+    
+  </form>
+</main>

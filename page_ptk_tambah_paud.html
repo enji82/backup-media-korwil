@@ -1,0 +1,90 @@
+<header>
+  <h2>TAMBAH DATA PTK PAUD</h2>
+</header>
+
+<main class="manual-form">
+  <form id="addPtkPaudForm">
+    <div class="form-layout-grid-3">
+
+      <div class="form-column">
+        <h3 class="section-title">Data Lembaga</h3>
+        <div class="form-group">
+          <label for="jenjang">Jenjang</label>
+          <select id="jenjang" name="Jenjang" required></select>
+        </div>
+        <div class="form-group">
+          <label for="namaLembaga">Nama Lembaga</label>
+          <select id="namaLembaga" name="Nama Lembaga" required disabled>
+            <option value="">-- Pilih Jenjang Dahulu --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-column">
+        <h3 class="section-title">Data Pribadi</h3>
+        <div class="form-group">
+          <label for="nama">Nama</label>
+          <input type="text" id="nama" name="Nama" required>
+        </div>
+        <div class="form-group">
+          <label for="jenisKelamin">L/P</label>
+          <select id="jenisKelamin" name="L/P" required>
+            <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
+            <option value="L">L</option>
+            <option value="P">P</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="ttl">Tempat, Tanggal Lahir</label>
+          <input type="text" id="ttl" name="Tempat, Tanggal Lahir" required>
+        </div>
+        <div class="form-group">
+          <label for="pendidikan">Pendidikan</label>
+          <input type="text" id="pendidikan" name="Pendidikan" placeholder="Jenjang Jurusan Tahun Lulus" required>
+        </div>
+         <div class="form-group">
+          <label for="serdik">Serdik</label>
+          <select id="serdik" name="Serdik" required>
+            <option value="" disabled selected>-- Pilih --</option>
+            <option value="Ya">Ya</option>
+            <option value="Tidak">Tidak</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-column">
+        <h3 class="section-title">Data Kepegawaian</h3>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" name="Status" required>
+             <option value="" disabled selected>-- Pilih Status --</option>
+          </select>
+        </div>
+         <div class="form-group">
+          <label for="nipNiy">NIP/NIY</label>
+          <input type="text" id="nipNiy" name="NIP/NIY">
+        </div>
+        <div class="form-group">
+          <label for="pangkat">Pangkat, Gol.Ruang</label>
+          <input type="text" id="pangkat" name="Pangkat, Gol./Ruang">
+        </div>
+        <div class="form-group">
+          <label for="jabatan">Jabatan</label>
+          <select id="jabatan" name="Jabatan" required></select>
+        </div>
+        <div class="form-group">
+          <label for="tmt">TMT</label>
+          <input type="date" id="tmt" name="TMT" required>
+        </div>
+        <div class="form-group">
+          <label for="nuptk">NUPTK</label>
+          <input type="text" id="nuptk" name="NUPTK" pattern="\d{16}" title="NUPTK harus 16 digit angka">
+        </div>
+        <div style="margin-top: 20px;">
+          <button type="submit" class="submit-btn">Simpan Data PTK</button>
+        </div>
+      </div>
+      
+    </div>
+  </form>
+</main>

@@ -1,0 +1,127 @@
+<header>
+  <h2>EDIT DATA PTK SEKOLAH DASAR</h2>
+</header>
+
+<div id="loading-data" class="loading-container">
+    <div class="spinner-container">
+        <div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div>
+    </div>
+    <p>Memuat data PTK untuk diedit...</p>
+</div>
+
+<main class="manual-form" id="edit-form-container" style="max-width: 900px; margin: 20px auto; display: none;">
+  <form id="editPtkSdForm">
+    <input type="hidden" name="rowIndex">
+    <input type="hidden" name="source">
+    
+    <fieldset class="ptk-fieldset">
+      <legend>Data Sekolah</legend>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Status Sekolah (Tidak dapat diubah)</label>
+          <input type="text" name="statusSekolah" readonly style="background-color: rgba(0,0,0,0.3); cursor: not-allowed;">
+        </div>
+        <div class="form-group">
+          <label>Unit Kerja (Tidak dapat diubah)</label>
+          <input type="text" name="Unit Kerja" readonly style="background-color: rgba(0,0,0,0.3); cursor: not-allowed;">
+        </div>
+      </div>
+    </fieldset>
+
+    <div id="dynamic-form-container">
+      <fieldset class="ptk-fieldset">
+        <legend>Data Pribadi</legend>
+        <div class="form-group">
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" id="nama" name="Nama" required>
+            <p class="input-hint">Gunakan huruf kapital.</p>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="ttl">Tempat, Tanggal Lahir</label>
+                <input type="text" id="ttl" name="Tempat, Tanggal Lahir" required>
+            </div>
+            <div class="form-group">
+                <label for="jenisKelamin">Jenis Kelamin</label>
+                <select id="jenisKelamin" name="L/P" required>
+                    <option value="" disabled>-- Pilih --</option>
+                    <option value="L">L</option>
+                    <option value="P">P</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="pendidikan">Pendidikan</label>
+                <input type="text" id="pendidikan" name="Pendidikan" required>
+                <p class="input-hint">Contoh: S1 PGSD 2020</p>
+            </div>
+            <div class="form-group">
+                <label for="sertifikat">Sertifikat Pendidik</label>
+                <select id="sertifikat" name="Serdik" required>
+                    <option value="" disabled>-- Pilih --</option>
+                    <option value="Ya">Ya</option>
+                    <option value="Tidak">Tidak</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nuptk">NUPTK</label>
+            <input type="text" id="nuptk" name="NUPTK" pattern="[0-9]{16}" title="NUPTK harus 16 digit angka.">
+            <p class="input-hint">Tidak wajib diisi. Jika diisi, harus 16 digit angka.</p>
+        </div>
+      </fieldset>
+
+      <fieldset class="ptk-fieldset">
+        <legend>Data Kepegawaian</legend>
+        <div id="form-negeri" style="display: none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="statusNegeri">Status</label>
+              <select id="statusNegeri" name="Status" required></select>
+            </div>
+            <div class="form-group">
+              <label for="nip">NIP</label>
+              <input type="text" id="nip" name="NIP" pattern="\d{18}" title="NIP harus 18 digit angka">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pangkatNegeri">Pangkat, Gol./Ruang</label>
+            <select id="pangkatNegeri" name="Pangkat, Gol./Ruang"></select>
+          </div>
+        </div>
+        <div id="form-swasta" style="display: none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="statusSwasta">Status</label>
+              <select id="statusSwasta" name="Status" required></select>
+            </div>
+            <div class="form-group">
+              <label for="niy">NIY</label>
+              <input type="text" id="niy" name="NIY">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="golImpassing">Gol. Impasing</label>
+            <input type="text" id="golImpassing" name="Gol. Impasing">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="jabatan">Jabatan</label>
+            <select id="jabatan" name="Jabatan" required></select>
+          </div>
+          <div class="form-group">
+            <label for="tmtJabatan">TMT Jabatan</label>
+            <input type="date" id="tmtJabatan" name="TMT" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tugasTambahan">Tugas Tambahan</label>
+          <select id="tugasTambahan" name="Tugas Tambahan"></select>
+        </div>
+      </fieldset>
+      <button type="submit" class="submit-btn">Simpan Perubahan</button>
+    </div>
+  </form>
+</main>

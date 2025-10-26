@@ -1,0 +1,54 @@
+<header>
+  <h2 id="main-form-title">FORMULIR EDIT LAPORAN BULAN SD</h2>
+</header>
+
+<div id="loading-data" class="loading-container">
+    <div class="spinner-container">
+        <div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div>
+    </div>
+    <p>Memuat data dan form untuk diedit...</p>
+</div>
+
+<main class="manual-form" id="edit-form-container" style="display: none;">
+  <form id="lapbulEditFormSd">
+    <input type="hidden" name="rowIndex">
+    <input type="hidden" name="source" value="SD">
+    
+    <div class="form-layout-grid">
+      <div class="form-column" id="form-col-1">
+        <fieldset class="ptk-fieldset">
+          <legend>Data Sekolah</legend>
+          <div class="form-grid-1">
+            <div class="form-group"><label>Laporan Bulan</label><select name="Bulan" required></select></div>
+            <div class="form-group"><label>Tahun</label><select name="Tahun" required></select></div>
+            <div class="form-group"><label>Status Sekolah</label><select name="Status" required><option value="Negeri">Negeri</option><option value="Swasta">Swasta</option></select></div>
+            <div class="form-group"><label>Nama Sekolah</label><input type="text" name="Nama Sekolah" required></div>
+            <div class="form-group"><label>NPSN</label><input type="text" name="NPSN" pattern="[0-9]{8}" required></div>
+            <div class="form-group"><label>Jumlah Rombel (Total)</label><input type="number" name="Jumlah Rombel" value="0" min="3" max="24" required></div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-column" id="form-col-2">
+        <fieldset class="ptk-fieldset">
+          <legend>Data Jumlah Murid</legend>
+          <div id="kelas-tabs" class="tabs-container"></div>
+          <div id="kelas-content-container"></div>
+        </fieldset>
+      </div>
+
+      <div class="form-column" id="form-col-3">
+        <div id="ptk-section-container"></div>
+        <fieldset class="ptk-fieldset">
+            <legend>Unggah Berkas</legend>
+            <div class="form-group">
+                <label for="fileLapbul">Ganti Scan PDF Laporan (Opsional, Max 300KB)</label>
+                <input type="file" id="fileLapbul" name="fileData" accept=".pdf">
+                <p id="existingFileLink" class="input-hint" style="margin-top: 10px;"></p>
+            </div>
+            <button type="submit" class="submit-btn" style="margin-top: 10px;">Simpan Perubahan</button>
+        </fieldset>
+      </div>
+    </div>
+  </form>
+</main>
