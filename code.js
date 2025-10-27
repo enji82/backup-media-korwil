@@ -153,134 +153,153 @@ function processManualForm(formData) {
   }
 }
 
-function getRiwayatPengirimanSKData() {
+function getSKRiwayatData() {
   try {
     const data = getDataFromSheet('SK_FORM_RESPONSES');
-    if (data.length < 2) return data;
-    let headers = data[0].map(h => String(h).trim());
-    let dataRows = data.slice(1);
-
-    // Pindahkan kolom "Tanggal Unggah" ke paling akhir
-    const tglUnggahIndex = headers.indexOf('Tanggal Unggah');
-    if (tglUnggahIndex > -1) {
-      const [tglUnggahHeader] = headers.splice(tglUnggahIndex, 1);
-      headers.push(tglUnggahHeader);
-      dataRows = dataRows.map(row => {
-        const [tglUnggahData] = row.splice(tglUnggahIndex, 1);
-        row.push(tglUnggahData);
-        return row;
-      });
+    if (!data || data.length < 2) {
+      // Selalu kembalikan struktur data yang konsisten meskipun kosong
+      return { headers: [], rows: [] };
     }
 
-    // --- PERUBAHAN PENGURUTAN DI SINI ---
-    // Dapatkan indeks baru dari "Tanggal Unggah" setelah dipindahkan
-    const tglUnggahSortIndex = headers.indexOf('Tanggal Unggah');
-    const tglSKIndex = headers.indexOf('Tanggal SK');
+    const originalHeaders = data[0].map(h => String(h).trim());
+    const dataRows = data.slice(1);
+
+    // Buat objek dari setiap baris agar lebih mudah dibaca
+    const structuredRows = dataRows.map(row => {
+      const rowObject = {};
+      originalHeaders.forEach((header, index) => {
+        const cell = row[index];
+        // Format tanggal langsung di server
+        if (cell instanceof Date) {
+          if (header === 'Tanggal SK') {
+            rowObject[header] = Utilities.formatDate(cell, Session.getScriptTimeZone(), "dd/MM/yyyy");
+          } else {
+            rowObject[header] = Utilities.formatDate(cell, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+          }
+        } else {
+          rowObject[header] = cell;
+        }
+      });
+      return rowObject;
+    });
+
+    // Urutkan data berdasarkan Tanggal Unggah (terbaru lebih dulu)
+    structuredRows.sort((a, b) => {
+      const dateA = new Date(a['Tanggal Unggah'] || 0);
+      const dateB = new Date(b['Tanggal Unggah'] || 0);
+      return dateB - dateA;
+    });
     
-    const parseDate = (value) => {
-        if (!value) return new Date(0);
-        if (value instanceof Date && !isNaN(value)) return value;
-        const date = new Date(value);
-        return isNaN(date) ? new Date(0) : date;
+    // Tentukan urutan header yang diinginkan untuk ditampilkan di tabel
+    const desiredHeaders = ["Nama SD", "Tahun Ajaran", "Semester", "Nomor SK", "Tanggal SK", "Kriteria SK", "Dokumen", "Tanggal Unggah"];
+
+    return {
+      headers: desiredHeaders,
+      rows: structuredRows
     };
-    
-    // Urutkan dataRows berdasarkan kolom "Tanggal Unggah" (terbaru di atas)
-    dataRows.sort((a, b) => {
-      const dateA = parseDate(a[tglUnggahSortIndex]);
-      const dateB = parseDate(b[tglUnggahSortIndex]);
-      return dateB - dateA; // Mengurutkan descending
-    });
 
-    const formattedDataRows = dataRows.map(row => {
-        return row.map((cell, index) => {
-            if (cell instanceof Date) {
-                if (index === tglSKIndex) {
-                    return Utilities.formatDate(cell, Session.getScriptTimeZone(), "dd/MM/yyyy");
-                } else {
-      
-                  return Utilities.formatDate(cell, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
-                }
-            }
-            return cell;
-        });
-    });
-
-    return [headers].concat(formattedDataRows);
-
-  } catch(e) {
-    return handleError('getRiwayatPengirimanSKData', e);
+  } catch (e) {
+    return handleError('getSKRiwayatData', e);
   }
 }
 
-function getStatusPengirimanSKData() { 
-  const data = getDataFromSheet('SK_BAGI_TUGAS');
-  return data.map(row => row.map(cell => String(cell))); // Pastikan semua data adalah string
+function getSKStatusData() {
+  try {
+    const data = getDataFromSheet('SK_BAGI_TUGAS');
+    if (!data || data.length < 2) {
+      return { headers: [], rows: [] }; // Kirim struktur kosong jika tidak ada data
+    }
+
+    const headers = data[0];
+    const dataRows = data.slice(1);
+
+    // BARIS UNTUK MENGURUTKAN DATA TELAH DIHAPUS DARI SINI
+
+    // Kembalikan data dalam format {headers, rows}
+    return {
+      headers: headers,
+      rows: dataRows
+    };
+
+  } catch (e) {
+    return handleError('getSKStatusData', e);
+  }
 }
 
-function getSKDataForManagement() {
+function getSKKelolaData() {
   try {
     const config = SPREADSHEET_CONFIG.SK_FORM_RESPONSES;
     const sheet = SpreadsheetApp.openById(config.id).getSheetByName(config.sheet);
-    if (!sheet) throw new Error(`Sheet '${config.sheet}' tidak ditemukan.`);
-    
-    const originalData = sheet.getDataRange().getValues();
-    if (originalData.length < 2) {
-      return { headers: originalData.length > 0 ? originalData[0] : [], rows: [] };
+    if (!sheet || sheet.getLastRow() < 2) {
+      return { headers: [], rows: [] };
     }
-    
-    // [PERUBAHAN 1] Mendefinisikan urutan header baru yang diinginkan
-    const desiredHeaders = ["Nama SD", "Tahun Ajaran", "Semester", "Nomor SK", "Tanggal SK", "Kriteria SK", "Dokumen", "Tanggal Unggah", "Update"];
+
+    const originalData = sheet.getDataRange().getValues();
+    const originalHeaders = originalData[0].map(h => String(h).trim());
     const dataRows = originalData.slice(1);
-    const originalHeadersMap = originalData[0].map(h => String(h).trim());
 
+    // Fungsi bantu untuk mengubah tanggal menjadi objek Date yang valid untuk perbandingan
     const parseDate = (value) => {
-        if (!value) return new Date(0);
-        if (value instanceof Date && !isNaN(value)) return value;
-        const date = new Date(value);
-        return isNaN(date) ? new Date(0) : date;
+      // Jika sudah berupa objek Date, kembalikan langsung
+      if (value instanceof Date && !isNaN(value)) return value;
+      // Jika tidak ada nilai, kembalikan tanggal paling awal agar diurutkan ke bawah
+      if (!value) return new Date(0); 
+      // Coba parsing dari format string
+      const date = new Date(value);
+      return isNaN(date) ? new Date(0) : date;
     };
-    
-    const indexedData = dataRows.map((row, index) => ({ row: row, originalIndex: index + 2 }));
 
-    // Logika pengurutan tidak berubah
+    const indexedData = dataRows.map((row, index) => ({
+      row: row,
+      originalIndex: index + 2
+    }));
+
+    // **KUNCI PERBAIKAN 1: LOGIKA PENGURUTAN MULTI-LEVEL**
+    const updateIndex = originalHeaders.indexOf('Update');
+    const timestampIndex = originalHeaders.indexOf('Tanggal Unggah');
+
     indexedData.sort((a, b) => {
-      const updateIndex = originalHeadersMap.indexOf('Update');
-      const timestampIndex = originalHeadersMap.indexOf('Tanggal Unggah');
-      const dateB_update = (updateIndex > -1) ? parseDate(b.row[updateIndex]) : new Date(0);
-      const dateA_update = (updateIndex > -1) ? parseDate(a.row[updateIndex]) : new Date(0);
-      if (dateB_update.getTime() !== dateA_update.getTime()) { return dateB_update - dateA_update; }
+      // Prioritas 1: Urutkan berdasarkan kolom "Update" (terbaru di atas)
+      const dateB_update = parseDate(b.row[updateIndex]);
+      const dateA_update = parseDate(a.row[updateIndex]);
+      if (dateB_update.getTime() !== dateA_update.getTime()) {
+        return dateB_update - dateA_update;
+      }
+
+      // Prioritas 2: Jika "Update" sama, urutkan berdasarkan "Tanggal Unggah" (terbaru di atas)
       const dateB_timestamp = parseDate(b.row[timestampIndex]);
       const dateA_timestamp = parseDate(a.row[timestampIndex]);
-     
       return dateB_timestamp - dateA_timestamp;
     });
 
-    const formattedRows = indexedData.map(item => {
-      const rowData = {};
-      originalHeadersMap.forEach((header, i) => {
+    // Mengubah baris menjadi objek (logika ini tetap sama)
+    const structuredRows = indexedData.map(item => {
+      const rowObject = {
+        _rowIndex: item.originalIndex,
+        _source: 'SK'
+      };
+      originalHeaders.forEach((header, i) => {
         let cell = item.row[i];
-        if ((header === 'Tanggal Unggah' || header === 'Update' || header === 'Tanggal SK') && cell) {
-          const dateObject = parseDate(cell);
-          if (dateObject.getTime() !== 0) {
-      
-            const format = (header === 'Tanggal SK') ? "dd/MM/yyyy" : "dd/MM/yyyy HH:mm:ss";
-            rowData[header] = Utilities.formatDate(dateObject, Session.getScriptTimeZone(), format);
-          } else {
-            rowData[header] = '';
-          }
+        if ((header === 'Tanggal Unggah' || header === 'Update' || header === 'Tanggal SK') && cell instanceof Date) {
+          const format = (header === 'Tanggal SK') ? "dd/MM/yyyy" : "dd/MM/yyyy HH:mm:ss";
+          rowObject[header] = Utilities.formatDate(cell, Session.getScriptTimeZone(), format);
         } else {
-          rowData[header] = String(cell);
+          rowObject[header] = cell;
         }
- 
       });
-      return { rowIndex: item.originalIndex, data: rowData };
+      return rowObject;
     });
+    
+    // **KUNCI PERBAIKAN 2: MENAMBAHKAN KOLOM BARU**
+    // Tambahkan "Tanggal Unggah" dan "Update" setelah "Aksi"
+    const desiredHeaders = ["Nama SD", "Tahun Ajaran", "Semester", "Nomor SK", "Kriteria SK", "Dokumen", "Aksi", "Tanggal Unggah", "Update"];
 
-    // [PERUBAHAN 2] Mengirimkan data dengan urutan header yang baru
-    return { headers: desiredHeaders, rows: formattedRows };
-
+    return {
+      headers: desiredHeaders,
+      rows: structuredRows
+    };
   } catch (e) {
-    return handleError("getSKDataForManagement", e);
+    return handleError("getSKKelolaData", e);
   }
 }
 
@@ -610,67 +629,92 @@ function processLapbulFormSd(formData) {
 function getLapbulRiwayatData() {
   try {
     const sheet = SpreadsheetApp.openById("1aKEIkhKApmONrCg-QQbMhXyeGDJBjCZrhR-fvXZFtJU").getSheetByName("Riwayat");
-
-    if (!sheet) {
-      throw new Error("Sheet 'Riwayat' di spreadsheet gabungan tidak ditemukan.");
+    if (!sheet || sheet.getLastRow() < 2) {
+      return { headers: [], rows: [] };
     }
 
+    // **KUNCI PERBAIKAN: Gunakan getDisplayValues() untuk mendapatkan string tanggal yang sudah diformat**
     const allData = sheet.getDataRange().getDisplayValues();
-
-    // KUNCI PERUBAHAN 1: Tentukan urutan kolom final yang Anda inginkan di sini.
-    // "Jenjang" tetap ada di akhir agar logika penyembunyian kolom di JavaScript tetap berfungsi.
-    const desiredHeaders = ["Nama Sekolah", "Status", "Bulan", "Tahun", "Rombel", "Dokumen", "Tanggal Unggah", "Jenjang"];
-
-    if (allData.length < 2) {
-      return [desiredHeaders]; // Jika data kosong, kirim header dengan urutan yang benar.
-    }
-
-    const sourceHeaders = allData[0].map(h => h.trim());
+    const originalHeaders = allData[0].map(h => String(h).trim());
     const dataRows = allData.slice(1);
 
-    // KUNCI PERBAIKAN 2: Buat peta untuk menemukan posisi kolom asli di spreadsheet.
-    const headerMap = {};
-    sourceHeaders.forEach((header, index) => {
-      headerMap[header] = index;
+    // Fungsi bantu untuk mengubah string tanggal "dd/MM/yyyy HH:mm:ss" menjadi objek Date
+    const parseDate = (dateString) => {
+        if (!dateString || typeof dateString !== 'string') return new Date(0);
+        const parts = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2}):(\d{2})/);
+        if (parts) {
+            // parts[3] = yyyy, parts[2] = MM, parts[1] = dd
+            return new Date(parts[3], parseInt(parts[2], 10) - 1, parts[1], parts[4], parts[5], parts[6]);
+        }
+        return new Date(0); // Kembalikan tanggal awal jika format tidak cocok
+    };
+    
+    // Ubah setiap baris menjadi objek
+    const structuredRows = dataRows.map(row => {
+        const rowObject = {};
+        originalHeaders.forEach((header, index) => {
+            rowObject[header] = row[index];
+        });
+        return rowObject;
     });
 
-    // KUNCI PERBAIKAN 3: Susun ulang setiap baris data sesuai urutan 'desiredHeaders'.
-    const reorderedDataRows = dataRows.map(row => {
-      const newRow = [];
-      desiredHeaders.forEach(header => {
-        const sourceIndex = headerMap[header];
-        // Jika kolom ditemukan di sumber, ambil datanya. Jika tidak, beri placeholder '-'.
-        newRow.push(sourceIndex !== undefined ? row[sourceIndex] : '-');
-      });
-      return newRow;
+    // Urutkan data berdasarkan Tanggal Unggah (terbaru di atas)
+    structuredRows.sort((a, b) => {
+      const dateB = parseDate(b['Tanggal Unggah']);
+      const dateA = parseDate(a['Tanggal Unggah']);
+      return dateB - dateA;
     });
 
-    // Kirim header baru dan data yang sudah disusun ulang.
-    // Proses pengurutan berdasarkan tanggal akan tetap dilakukan di sisi browser seperti sebelumnya.
-    return [desiredHeaders].concat(reorderedDataRows);
+    // Tentukan header yang akan ditampilkan di tabel
+    const desiredHeaders = ["Nama Sekolah", "Status", "Bulan", "Tahun", "Rombel", "Dokumen", "Tanggal Unggah"];
 
-  } catch(e) {
-    Logger.log(`Error in getLapbulRiwayatData: ${e.message}\nStack: ${e.stack}`);
-    throw new Error(`Terjadi error di server: ${e.message}`);
+    return {
+      headers: desiredHeaders,
+      rows: structuredRows
+    };
+
+  } catch (e) {
+    return handleError('getLapbulRiwayatData', e);
   }
 }
 
 function getLapbulStatusData() {
   try {
-    // Membuka spreadsheet dan sheet "Status" yang benar.
     const sheet = SpreadsheetApp.openById("1aKEIkhKApmONrCg-QQbMhXyeGDJBjCZrhR-fvXZFtJU").getSheetByName("Status");
-    
-    if (!sheet) {
-      throw new Error("Sheet 'Status' tidak ditemukan.");
+    if (!sheet || sheet.getLastRow() < 2) {
+      return { headers: [], rows: [] };
     }
     
-    // Langsung ambil dan kirim semua data yang terlihat (getDisplayValues).
-    // Proses pemilihan kolom dan filter akan dilakukan di javascript.html
-    return sheet.getDataRange().getDisplayValues();
+    const allData = sheet.getDataRange().getDisplayValues();
+    const sourceHeaders = allData[0];
+    const dataRows = allData.slice(1);
+
+    // Tentukan kolom mana yang ingin ditampilkan dari spreadsheet sumber
+    const displayIndices = [2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    const finalHeaders = displayIndices.map(index => sourceHeaders[index]);
+
+    // Buat data baris yang sudah dipilah
+    const finalRows = dataRows.map(row => {
+      // Simpan data filter secara terpisah untuk diolah di klien
+      const rowObject = {
+        _filterJenjang: row[0], // Kolom A
+        _filterTahun: row[1],   // Kolom B
+        _filterStatus: row[3]  // Kolom D
+      };
+      // Isi data utama untuk ditampilkan
+      finalHeaders.forEach((header, index) => {
+        rowObject[header] = row[displayIndices[index]];
+      });
+      return rowObject;
+    });
+
+    return {
+      headers: finalHeaders,
+      rows: finalRows
+    };
 
   } catch (e) {
-    Logger.log(`Error in getLapbulStatusData: ${e.message}`);
-    throw new Error(`Terjadi error di server: ${e.message}`);
+    return handleError('getLapbulStatusData', e);
   }
 }
 
@@ -678,20 +722,13 @@ function getLapbulKelolaData() {
   try {
     const paudSheet = SpreadsheetApp.openById(SPREADSHEET_CONFIG.LAPBUL_FORM_RESPONSES_PAUD.id).getSheetByName("Form Responses 1");
     const sdSheet = SpreadsheetApp.openById(SPREADSHEET_CONFIG.LAPBUL_FORM_RESPONSES_SD.id).getSheetByName("Input");
-    const finalHeaders = ["Nama Sekolah", "Status", "Jenjang", "Jumlah Rombel", "Bulan", "Tahun", "Dokumen", "Tanggal Unggah", "Update"];
     let combinedData = [];
 
     const parseDateForSort = (dateStr) => {
         if (!dateStr || !(typeof dateStr === 'string' || dateStr instanceof Date)) return new Date(0);
         if (dateStr instanceof Date) return dateStr;
-        const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2}):(\d{2})/);
-        if (parts) {
-            return new Date(parts[3], parts[2] - 1, parts[1], parts[4], parts[5], parts[6]);
-        }
-        const dateOnlyParts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-        if (dateOnlyParts) {
-            return new Date(dateOnlyParts[3], dateOnlyParts[2] - 1, dateOnlyParts[1]);
-        }
+        const parts = String(dateStr).match(/(\d{2})\/(\d{2})\/(\d{4})\s(\d{2}):(\d{2}):(\d{2})/);
+        if (parts) return new Date(parts[3], parseInt(parts[2], 10) - 1, parts[1], parts[4], parts[5], parts[6]);
         return new Date(0);
     };
 
@@ -701,49 +738,40 @@ function getLapbulKelolaData() {
       const headers = data[0].map(h => String(h).trim());
       const rows = data.slice(1);
 
-      const formatDate = (cell) => {
-          if (cell instanceof Date) {
-              return Utilities.formatDate(cell, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
-          }
-          return cell;
-      };
-
       rows.forEach((row, index) => {
-        const timestampCell = row[headers.indexOf("Tanggal Unggah")];
-        if (!timestampCell) return;
+        if (!row[0]) return; // Lewati baris kosong
 
-        const rowData = {};
+        const rowObject = {
+          _rowIndex: index + 2, // Simpan informasi baris asli
+          _source: sourceName    // Simpan sumber data (PAUD/SD)
+        };
         headers.forEach((header, i) => {
-            rowData[header] = (header === "Tanggal Unggah" || header === "Update") ? formatDate(row[i]) : row[i];
+          rowObject[header] = (row[i] instanceof Date) ? Utilities.formatDate(row[i], Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss") : row[i];
         });
-
+        
         if (sourceName === 'SD') {
-          rowData['Jenjang'] = 'SD';
+          rowObject['Jenjang'] = 'SD';
         }
         
-        combinedData.push({
-          rowIndex: index + 2,
-          source: sourceName,
-          data: rowData
-        });
+        combinedData.push(rowObject);
       });
     };
 
     processSheetData(paudSheet, 'PAUD');
     processSheetData(sdSheet, 'SD');
     
-    // KUNCI PERBAIKAN: Logika pengurutan diubah agar HANYA menggunakan "Tanggal Unggah"
     combinedData.sort((a, b) => {
-        const dateB = parseDateForSort(b.data['Tanggal Unggah']);
-        const dateA = parseDateForSort(a.data['Tanggal Unggah']);
-        return dateB - dateA; // Mengurutkan dari yang terbaru ke terlama
+        const dateB = parseDateForSort(b['Update'] || b['Tanggal Unggah']);
+        const dateA = parseDateForSort(a['Update'] || a['Tanggal Unggah']);
+        return dateB - dateA;
     });
+    
+    const finalHeaders = ["Nama Sekolah", "Jenjang", "Bulan", "Tahun", "Dokumen", "Aksi", "Tanggal Unggah", "Update"];
 
     return { headers: finalHeaders, rows: combinedData };
 
   } catch (e) {
-    Logger.log(`Error in getLapbulKelolaData: ${e.message}\nStack: ${e.stack}`);
-    return { error: `Terjadi error di server: ${e.message}` };
+    return handleError('getLapbulKelolaData', e);
   }
 }
 
@@ -1002,18 +1030,37 @@ function getUnduhFormatInfo() {
   });
 }
 
+/**
+ * [REFACTOR] Mengambil data keadaan PTK PAUD.
+ * Mengembalikan data dalam format objek.
+ */
 function getKeadaanPtkPaudData() {
   try {
-    // ID Spreadsheet dari URL yang Anda berikan
     const ss = SpreadsheetApp.openById("1an0oQQPdMh6wrUJIAzTGYk3DKFvYprK5SU7RmRXjIgs");
     const sheet = ss.getSheetByName("Keadaan PTK PAUD");
-    
-    if (!sheet) {
-      throw new Error("Sheet 'Keadaan PTK PAUD' tidak ditemukan.");
+    if (!sheet || sheet.getLastRow() < 2) {
+      return { headers: [], rows: [] };
     }
-    
-    // Mengambil semua data dari sheet
-    return sheet.getDataRange().getDisplayValues();
+
+    const allData = sheet.getDataRange().getDisplayValues();
+    const headers = allData[0];
+    const dataRows = allData.slice(1);
+
+    // Ubah setiap baris menjadi objek
+    const structuredRows = dataRows.map(row => {
+      const rowObject = {};
+      headers.forEach((header, index) => {
+        rowObject[header] = row[index];
+      });
+      // Tambahkan data untuk filter
+      rowObject._filterJenjang = rowObject['Jenjang'];
+      return rowObject;
+    });
+
+    return {
+      headers: headers,
+      rows: structuredRows
+    };
   } catch (e) {
     return handleError('getKeadaanPtkPaudData', e);
   }
@@ -1035,35 +1082,58 @@ function getKeadaanPtkSdData() {
 }
 
 /**
- * Mengambil data jumlah PTK bulanan untuk PAUD dari spreadsheet.
+ * [REFACTOR] Mengambil data jumlah PTK bulanan untuk PAUD.
+ * Fungsi ini memilih kolom yang relevan dan mengembalikan data dalam format objek.
  */
-function getJumlahPtkPaudBulananData() {
+function getPtkJumlahBulananPaudData() { // Nama fungsi diseragamkan
   try {
     const ss = SpreadsheetApp.openById("1an0oQQPdMh6wrUJIAzTGYk3DKFvYprK5SU7RmRXjIgs");
     const sheet = ss.getSheetByName("Data PAUD Bulanan");
-    if (!sheet) {
-      throw new Error("Sheet 'Data PAUD Bulanan' tidak ditemukan.");
+    if (!sheet || sheet.getLastRow() < 2) {
+      return { headers: [], rows: [] };
     }
     
     const allData = sheet.getDataRange().getDisplayValues();
-    const headers = allData[0];
+    const headers = allData[0].map(h => String(h).trim());
     const dataRows = allData.slice(1);
 
-    // [PERBAIKAN] Menambahkan Kolom D (Bulan) dan E (Tahun) untuk filter
-    // Indeks kolom yang diinginkan (A=0, B=1, C=2, D=3, E=4, F=5, dst.)
-    const colIndices = [0, 1, 2, 3, 4, 5, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35];
-    // Filter header sesuai kolom yang diinginkan
-    const finalHeaders = colIndices.map(index => headers[index]);
+    // Tentukan kolom mana saja yang ingin kita tampilkan di tabel
+    const desiredHeaders = [
+        "Nama Lembaga", "Jenjang", "Status", "Jumlah Rombel", 
+        "KS PNS", "KS Non PNS", "GK PNS", "GK PPPK", "GTY", "GTT", 
+        "Penjaga", "TAS", "Pustakawan", "Tendik Lain", "JML PTK"
+    ];
+    
+    // Ambil indeks (posisi) dari kolom-kolom yang kita butuhkan
+    const colIndices = desiredHeaders.map(header => headers.indexOf(header));
+    
+    // Ambil juga indeks untuk kolom yang akan digunakan untuk filter
+    const tahunIndex = headers.indexOf('Tahun');
+    const bulanIndex = headers.indexOf('Bulan');
 
-    // Filter setiap baris untuk hanya menyertakan data dari kolom yang diinginkan
-    const finalData = dataRows.map(row => {
-      return colIndices.map(index => row[index]);
+    // Ubah setiap baris data menjadi format objek yang lebih mudah dibaca
+    const structuredRows = dataRows.map(row => {
+        const rowObject = {
+            // Data ini disembunyikan tapi dipakai untuk filter
+            _filterTahun: row[tahunIndex],
+            _filterBulan: row[bulanIndex],
+            _filterJenjang: row[headers.indexOf('Jenjang')]
+        };
+        // Masukkan data yang akan ditampilkan di tabel
+        desiredHeaders.forEach((header, i) => {
+            const index = colIndices[i];
+            rowObject[header] = row[index];
+        });
+        return rowObject;
     });
 
-    return [finalHeaders].concat(finalData);
+    return {
+      headers: desiredHeaders,
+      rows: structuredRows
+    };
 
   } catch (e) {
-    return handleError('getJumlahPtkPaudBulananData', e);
+    return handleError('getPtkJumlahBulananPaudData', e);
   }
 }
 
