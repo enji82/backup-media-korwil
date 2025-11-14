@@ -1,5 +1,5 @@
 <header>
-  <h2>DAFTAR TENAGA PENDIDIK DAN KEPENDIDIKAN (PTK) PAUD</h2>
+  <h2>DAFTAR PENDIDIK DAN TENAGA KEPENDIDIKAN (PTK) PAUD</h2>
 </header>
 
 <div class="filter-container">
@@ -15,6 +15,18 @@
       <label for="filterStatus">Status:</label>
       <select id="filterStatus"></select>
     </div>
+    <div class="filter-group">
+      <label for="filterPendidikan">Pendidikan:</label>
+      <select id="filterPendidikan"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterSerdik">Serdik:</label>
+      <select id="filterSerdik"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterDapodik">Dapodik:</label>
+      <select id="filterDapodik"></select>
+    </div>
 </div>
 
 
@@ -28,7 +40,7 @@
 
   <div id="tableWrapper" style="display:none;">
     <div class="table-container">
-      <table id="daftarPtkPaudTable" class="data-table">
+      <table id="daftarPtkPaudTable" class="data-table freeze-pane-table">
         <thead></thead>
         <tbody></tbody>
       </table>
@@ -36,3 +48,22 @@
     <div id="pagination-container" class="pagination-container"></div>
   </div>
 </main>
+
+<style>
+  /* PERINTAH RATA KIRI (Sesuai permintaan G18 Anda) */
+  #daftarPtkPaudTable td:nth-child(2),  /* Nama */
+  #daftarPtkPaudTable td:nth-child(3),  /* Nama Lembaga */
+  #daftarPtkPaudTable td:nth-child(7),  /* Pangkat */
+  #daftarPtkPaudTable td:nth-child(9),  /* Jabatan */
+  #daftarPtkPaudTable td:nth-child(12), /* Tempat, Tgl Lahir */
+  #daftarPtkPaudTable td:nth-child(14)  /* Jurusan */
+  {
+    text-align: left !important;
+  }
+
+  /* Lawan aturan global dan paksa Kolom 4 (Jenjang) kembali ke tengah */
+  #daftarPtkPaudTable td:nth-child(4)
+  {
+    text-align: center !important;
+  }
+</style>

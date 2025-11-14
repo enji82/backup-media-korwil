@@ -12,22 +12,15 @@
     </div>
     <p>Memuat data, mohon tunggu...</p>
 </div>
-  
-  <div id="tableWrapper" class="table-container" style="display:none;">
-    <table id="statusTable" class="data-table freeze-pane-table">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
+
+<div id="tableWrapper" style="display:none;">
+    <div class="table-container">
+      <table id="statusTable" class="data-table freeze-pane-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
   
-  <div id="pagination-container" class="pagination-container" style="display:none;"></div>
+  <div id="pagination-container" class="pagination-container"></div>
 </main>
-
-<style>
-  main.table-view-container {
-    display: block; /* Mengembalikan ke layout normal, bukan flexbox */
-  }
-  #tableWrapper.table-container {
-    overflow-y: initial; /* Menghilangkan scrollbar internal dari pembungkus tabel */
-  }
-</style>

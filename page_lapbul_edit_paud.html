@@ -1,144 +1,138 @@
 <header>
-  <h2 id="main-form-title">FORMULIR EDIT LAPORAN BULAN PAUD</h2>
+<h2 id="main-form-title">FORMULIR EDIT LAPORAN BULAN PAUD</h2>
 </header>
 
 <div id="loading-data" class="loading-container">
     <div class="spinner-container">
         <div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div><div class="spinner-bar"></div>
     </div>
-    <p>Memuat data untuk diedit...</p>
+    <p>Memuat data lama...</p>
 </div>
 
-<main class="manual-form" id="edit-form-container" style="display: none;">
-  <form id="lapbulEditFormPaud">
-    <input type="hidden" name="rowIndex">
-    <input type="hidden" name="source" value="PAUD">
+<main class="manual-form form-tab-container" id="edit-lapbul-form-container" style="display: none;">
+    <form id="lapbulEditFormPaud">
+        <input type="hidden" name="rowIndex" id="rowIndex">
+        <input type="hidden" name="source" value="PAUD">
 
-    <div class="form-layout-grid-3">
-      <div class="form-column">
-        <h3 class="section-title">Data Sekolah</h3>
-        <div class="form-grid">
-            <div class="form-group"><label>Laporan Bulan</label><select name="Bulan" required></select></div>
-            <div class="form-group"><label>Tahun</label><select name="Tahun" required></select></div>
+        <div id="edit-tab-nav" class="tabs-container">
+            <button type="button" class="tab-link active" data-tab="edit-dataSekolah">1. Data Lembaga</button>
+            <button type="button" class="tab-link" data-tab="edit-dataMurid">2. Data Jumlah Murid</button>
+            <button type="button" class="tab-link" data-tab="edit-dataPtk">3. Data Jumlah PTK</button>
+            <button type="button" class="tab-link" data-tab="edit-dataDokumen">4. Dokumen</button>
         </div>
-        <div class="form-grid">
-            <div class="form-group"><label>Status Sekolah</label><select name="Status" required><option value="Swasta">Swasta</option><option value="Negeri">Negeri</option></select></div>
-            <div class="form-group"><label>Jenjang</label><select name="Jenjang" required><option value="KB">KB</option><option value="TK">TK</option></select></div>
-        </div>
-        <div class="form-group"><label>Nama Sekolah</label><input type="text" name="Nama Sekolah" required></div>
-        <div class="form-grid">
-            <div class="form-group"><label>NPSN</label><input type="text" name="NPSN" pattern="\d*" required></div>
-            <div class="form-group"><label>Jumlah Rombel</label><input type="number" name="Jumlah Rombel" value="0" min="0" required></div>
-        </div>
-      </div>
 
-      <div class="form-column">
-          <h3 class="section-title">Data Jumlah Murid</h3>
-          <div class="murid-grid-vertical">
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 0-1 Tahun</label>
-                <div class="murid-input-pair">
-                  <div class="form-group"><label>Laki-laki</label><input type="number" name="0-1 L" value="0" min="0" required></div>
-                  <div class="form-group"><label>Perempuan</label><input type="number" name="0-1 P" value="0" min="0" required></div>
+        <div id="tab-content-wrapper">
+
+            <div id="edit-dataSekolah" class="tab-content-form active">
+                <h3 class="sub-section-title">Informasi Data Lama (Hanya Baca)</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Laporan Bulan (Tidak dapat diubah)</label><input type="text" name="Bulan" readonly></div>
+                    <div class="form-group"><label>Tahun (Tidak dapat diubah)</label><input type="text" name="Tahun" readonly></div>
+                    <div class="form-group"><label>Status Lembaga (Tidak dapat diubah)</label><input type="text" name="Status" readonly></div>
+                    <div class="form-group"><label>Jenjang (Tidak dapat diubah)</label><input type="text" name="Jenjang" readonly></div>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 1-2 Tahun</label>
-                <div class="murid-input-pair">
-                  <div class="form-group"><label>Laki-laki</label><input type="number" name="1-2 L" value="0" min="0" required></div>
-                  <div class="form-group"><label>Perempuan</label><input type="number" name="1-2 P" value="0" min="0" required></div>
+                <div class="form-group"><label>Nama Lembaga (Tidak dapat diubah)</label><input type="text" name="Nama Sekolah" readonly></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>NPSN</label><input type="text" name="NPSN"></div>
+                    <div class="form-group"><label>Tanggal Unggah</label><input type="text" name="Tanggal Unggah" readonly></div>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 2-3 Tahun</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="2-3 L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="2-3 P" value="0" min="0" required></div>
+                
+                <fieldset class="ptk-fieldset">
+                    <legend>Data Lembaga (Dapat Diubah)</legend>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Jumlah Rombel</label><input type="number" name="Jumlah Rombel" min="0" required></div>
+                    </div>
+                </fieldset>
+
+                <div class="tab-form-footer">
+                    <button type="button" class="submit-btn next-tab-btn" data-target="edit-dataMurid" style="width: auto; margin-left: auto;">Berikutnya</button>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 3-4 Tahun</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="3-4 L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="3-4 P" value="0" min="0" required></div>
+            </div>
+
+            <div id="edit-dataMurid" class="tab-content-form" style="padding-top: 1px;">
+                <fieldset class="ptk-fieldset">
+                    <legend>Menurut Usia</legend>
+                    <div class="murid-grid-vertical">
+                        <div class="murid-group"><label class="murid-group-label">Usia 0-1 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_0_1_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_0_1_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia 1-2 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_1_2_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_1_2_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia 2-3 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_2_3_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_2_3_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia 3-4 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_3_4_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_3_4_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia 4-5 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_4_5_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_4_5_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia 5-6 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_5_6_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_5_6_P" min="0"></div></div></div>
+                        <div class="murid-group"><label class="murid-group-label">Usia > 6 Tahun</label><div class="murid-input-pair"><div class="form-group"><label>L</label><input type="number" name="murid_6_up_L" min="0"></div><div class="form-group"><label>P</label><input type="number" name="murid_6_up_P" min="0"></div></div></div>
+                    </div>
+                </fieldset>
+                <fieldset class="ptk-fieldset" style="margin-top: 20px;">
+                    <legend>Menurut Rombel</legend>
+                    <div class="murid-grid-vertical" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="murid-group">
+                          <label class="murid-group-label">Kelompok A</label>
+                          <div class="murid-input-pair">
+                              <div class="form-group"><label>L</label><input type="number" name="kelompok_A_L" min="0"></div>
+                              <div class="form-group"><label>P</label><input type="number" name="kelompok_A_P" min="0"></div>
+                          </div>
+                        </div>
+                        <div class="murid-group">
+                          <label class="murid-group-label">Kelompok B</label>
+                          <div class="murid-input-pair">
+                              <div class="form-group"><label>L</label><input type="number" name="kelompok_B_L" min="0"></div>
+                              <div class="form-group"><label>P</label><input type="number" name="kelompok_B_P" min="0"></div>
+                          </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div id="edit-murid-validation-feedback" class="murid-validation-container">
+                    <p>Total Murid (Menurut Usia): <span id="edit-totalUsia">0</span></p>
+                    <p>Total Murid (Menurut Rombel): <span id="edit-totalRombel">0</span></p>
+                    <p id="edit-murid-validation-status" class="status-ok">Isikan jumlah murid.</p>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 4-5 Tahun</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="4-5 L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="4-5 P" value="0" min="0" required></div>
+                <div class="tab-form-footer" style="flex-shrink: 0;">
+                    <button type="button" class="submit-btn prev-tab-btn" data-target="edit-dataSekolah" style="width: auto;">Sebelumnya</button>
+                    <button type="button" class="submit-btn next-tab-btn" id="edit-next-to-ptk" style="width: auto; margin-left: auto;">Berikutnya</button>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Usia 5-6 Tahun</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="5-6 L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="5-6 P" value="0" min="0" required></div>
-                </div>
-              </div>
-              <div class="murid-group">
-                  <label class="murid-group-label">Usia > 6 Tahun</label>
-                  <div class="murid-input-pair">
-                      <div class="form-group"><label>Laki-laki</label><input type="number" name="> 6 L" value="0" min="0" required></div>
-                      <div class="form-group"><label>Perempuan</label><input type="number" name="> 6 P" value="0" min="0" required></div>
+            </div>
+
+            <div id="edit-dataPtk" class="tab-content-form" style="padding-top: 1px;">
+                <fieldset class="ptk-fieldset">
+                  <legend>Kepala Sekolah</legend>
+                  <div class="ptk-group-grid ptk-grid-2">
+                    <div class="form-group"><label>ASN</label><input type="number" name="kepsek_ASN" min="0" max="1"></div>
+                    <div class="form-group"><label>Non ASN</label><input type="number" name="kepsek_Non_ASN" min="0" max="1"></div>
                   </div>
-              </div>
-          </div>
-          <div class="form-grid" style="margin-top: 15px;">
-              <div class="murid-group">
-                <label class="murid-group-label">Kelompok A</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="A L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="A P" value="0" min="0" required></div>
+                </fieldset>
+                <fieldset class="ptk-fieldset">
+                  <legend>Guru</legend>
+                  <div class="ptk-group-grid ptk-grid-4">
+                    <div class="form-group"><label>PNS</label><input type="number" name="guru_PNS" min="0"></div>
+                    <div class="form-group"><label>PPPK</label><input type="number" name="guru_PPPK" min="0"></div>
+                    <div class="form-group"><label>GTY</label><input type="number" name="guru_GTY" min="0"></div>
+                    <div class="form-group"><label>GTT</label><input type="number" name="guru_GTT" min="0"></div>
+                  </div>
+                </fieldset>
+                <fieldset class="ptk-fieldset">
+                  <legend>Tenaga Kependidikan</legend>
+                  <div class="ptk-group-grid ptk-grid-4">
+                    <div class="form-group"><label>Penjaga</label><input type="number" name="tendik_Penjaga" min="0"></div>
+                    <div class="form-group"><label>Tenaga Adm.</label><input type="number" name="tendik_TAS" min="0"></div>
+                    <div class="form-group"><label>Pustakawan</label><input type="number" name="tendik_Pustakawan" min="0"></div>
+                    <div class="form-group"><label>Lainnya</label><input type="number" name="tendik_Lainnya" min="0"></div>
+                  </div>
+                </fieldset>
+                <div class="tab-form-footer" style="flex-shrink: 0;">
+                    <button type="button" class="submit-btn prev-tab-btn" data-target="edit-dataMurid" style="width: auto;">Sebelumnya</button>
+                    <button type="button" class="submit-btn next-tab-btn" data-target="edit-dataDokumen" style="width: auto; margin-left: auto;">Berikutnya</button>
                 </div>
-              </div>
-              <div class="murid-group">
-                <label class="murid-group-label">Kelompok B</label>
-                <div class="murid-input-pair">
-                    <div class="form-group"><label>Laki-laki</label><input type="number" name="B L" value="0" min="0" required></div>
-                    <div class="form-group"><label>Perempuan</label><input type="number" name="B P" value="0" min="0" required></div>
-                </div>
-              </div>
-          </div>
-        </div>
+            </div>
 
-        <div class="form-column">
-          <h3 class="section-title">Data Jumlah PTK</h3>
-          <fieldset class="ptk-fieldset">
-            <legend>Kepala Sekolah</legend>
-            <div class="ptk-group-grid ptk-grid-2">
-              <div class="form-group"><label>ASN</label><input type="number" name="KS PNS" value="0" min="0" max="1"></div>
-              <div class="form-group"><label>Non ASN</label><input type="number" name="KS Non PNS" value="0" min="0" max="1"></div>
+            <div id="edit-dataDokumen" class="tab-content-form">
+                <h3 class="sub-section-title">Perbarui Dokumen (Opsional)</h3>
+                <div class="form-group"><label>File Saat Ini</label><div id="existingFileLink">Tidak ada file.</div></div>
+                <div class="form-group"><label for="fileLapbul">Ganti Scan PDF Laporan (Maks. 300 KB)</label><input type="file" id="fileLapbul" name="fileData" accept=".pdf"></div>
+                <div class="tab-form-footer">
+                    <button type="button" class="submit-btn prev-tab-btn" data-target="edit-dataPtk" style="width: auto;">Sebelumnya</button>
+                    <button type="submit" class="submit-btn" id="edit-lapbul-submit-btn" style="width: auto; margin-left: auto;">Simpan Perubahan</button>
+                </div>
             </div>
-          </fieldset>
-          <fieldset class="ptk-fieldset">
-            <legend>Guru</legend>
-            <div class="ptk-group-grid ptk-grid-4">
-              <div class="form-group"><label>PNS</label><input type="number" name="GK PNS" value="0" min="0"></div>
-              <div class="form-group"><label>PPPK</label><input type="number" name="GK PPPK" value="0" min="0"></div>
-              <div class="form-group"><label>GTY</label><input type="number" name="GTY" value="0" min="0"></div>
-              <div class="form-group"><label>GTT</label><input type="number" name="GTT" value="0" min="0"></div>
-            </div>
-          </fieldset>
-          <fieldset class="ptk-fieldset">
-            <legend>Tenaga Kependidikan</legend>
-            <div class="ptk-group-grid ptk-grid-4">
-              <div class="form-group"><label>Penjaga</label><input type="number" name="Penjaga" value="0" min="0"></div>
-              <div class="form-group"><label>Tenaga Adm.</label><input type="number" name="TAS" value="0" min="0"></div>
-              <div class="form-group"><label>Pustakawan</label><input type="number" name="Pustakawan" value="0" min="0"></div>
-              <div class="form-group"><label>Lainnya</label><input type="number" name="Tendik Lain" value="0" min="0"></div>
-            </div>
-          </fieldset>
-          
-          <h3 class="section-title">Unggah Dokumen</h3>
-          <div class="form-group">
-              <label for="fileLapbul">Ganti Scan PDF Laporan (Opsional, Max 300 KB)</label>
-              <input type="file" id="fileLapbul" name="fileData" accept=".pdf">
-              <div id="existingFileLink" class="input-hint" style="margin-top: 10px;"></div>
-          </div>
-          <button type="submit" class="submit-btn">Simpan Perubahan</button>
-      </div>
-    </div>
-  </form>
+        </div>
+    </form>
 </main>

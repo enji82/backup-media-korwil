@@ -43,29 +43,48 @@
     </div>
 
   </div>
-  
-  <div id="pagination-container" class="pagination-container"></div>
 </main>
 
 <style>
-  .main-content {
-    overflow-y: hidden;
+  /* 1. Paksa halaman (#main-content) untuk TIDAK scroll */
+  #main-content {
+    overflow-y: hidden !important;
   }
-  main.table-view-container, #tableWrapper {
-    flex-grow: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+
+  /* 2. Paksa <main> (pembungkus halaman) untuk mengisi sisa ruang */
+  main.table-view-container {
+    flex-grow: 1 !important;
+    min-height: 0 !important; 
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 3. Paksa #tableWrapper untuk mengisi sisa ruang di dalam <main> */
+  #tableWrapper {
+    flex-grow: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* 4. INTI: Perintahkan .table-container untuk mengisi sisa ruang DAN SCROLL */
+  #tableWrapper .table-container {
+    flex-grow: 1 !important;
+    overflow-y: auto !important; /* Aktifkan scrollbar vertikal HANYA di sini */
+  }
+
+  /* 5. PERBAIKAN Z-INDEX: (Menargetkan ID tabel halaman ini) */
+  #ptkJumlahBulananPaudTable thead th:nth-child(1),
+  #ptkJumlahBulananPaudTable thead th:nth-child(2) {
+    z-index: 7 !important;
+  }
+
+  /* 6. PERBAIKAN SCROLLBAR: Sembunyikan scrollbar */
+  #tableWrapper .table-container::-webkit-scrollbar {
+    display: none !important; 
   }
   #tableWrapper .table-container {
-    overflow-y: auto;
-    flex-grow: 1;
+    scrollbar-width: none !important; 
+    -ms-overflow-style: none !important; 
   }
-
-  /* TAMBAHKAN BLOK DI BAWAH INI */
-  #ptkJumlahBulananPaudTable tfoot td {
-    background-color: #101E26; /* Warna solid gelap seperti header */
-  }
-
-  /* AKHIR BLOK TAMBAHAN */
 </style>
